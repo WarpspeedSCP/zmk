@@ -67,6 +67,9 @@ void peripheral_event_work_callback(struct k_work *work) {
 
 K_WORK_DEFINE(peripheral_event_work, peripheral_event_work_callback);
 
+K_MSGQ_DEFINE(peripheral_batt_lvl_msgq, sizeof(struct zmk_peripheral_battery_state_changed),
+              CONFIG_ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE, 4);
+
 int peripheral_slot_index_for_conn(struct bt_conn *conn) {
     for (int i = 0; i < ZMK_BLE_SPLIT_PERIPHERAL_COUNT; i++) {
         if (peripherals[i].conn == conn) {
@@ -237,6 +240,11 @@ static uint8_t split_central_battery_level_notify_func(struct bt_conn *conn,
 
     LOG_DBG("[BATTERY LEVEL NOTIFICATION] data %p length %u", data, length);
     uint8_t battery_level = ((uint8_t *)data)[0];
+    struct zmk_peripheral_battery_state_changed ev = {
+        .state_of_charge = battery_level
+    };
+    k_msgq_put(&peripheral_batt_lvl_msgq, &ev, K_NO_WAIT);
+    k_work_submit(&peripheral_batt_lvl_work);
     LOG_DBG("Battery level: %u", battery_level);
     struct zmk_peripheral_battery_state_changed ev = {.state_of_charge = battery_level};
     k_msgq_put(&peripheral_batt_lvl_msgq, &ev, K_NO_WAIT);
