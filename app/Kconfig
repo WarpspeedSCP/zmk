@@ -107,16 +107,15 @@ config USB_HID_POLL_INTERVAL_MS
 endif
 
 menuconfig ZMK_BLE
-    bool "BLE (HID over GATT)"
-    select BT
-    select BT_SMP
-    select BT_SMP_SC_PAIR_ONLY
-    select BT_SMP_APP_PAIRING_ACCEPT
-    select BT_PERIPHERAL
-    select BT_DIS
-    select BT_BAS
-    select BT_SETTINGS
-    select SETTINGS
+	bool "BLE (HID over GATT)"
+	select BT
+	select BT_SMP
+	select BT_SMP_SC_PAIR_ONLY
+	select BT_SMP_APP_PAIRING_ACCEPT
+	select BT_PERIPHERAL
+	select BT_DIS
+	select BT_SETTINGS
+	select SETTINGS
 
 if ZMK_BLE
 
@@ -188,7 +187,113 @@ endmenu
 # HID
 endmenu
 
-rsource "src/split/Kconfig"
+menu "Split Support"
+
+config ZMK_SPLIT
+	bool "Split keyboard support"
+
+if ZMK_SPLIT
+
+menuconfig ZMK_SPLIT_BLE
+	bool "Split keyboard support via BLE transport"
+	depends on ZMK_BLE
+	default y
+	select BT_USER_PHY_UPDATE
+
+if ZMK_SPLIT_BLE
+
+menuconfig ZMK_SPLIT_BLE_ROLE_CENTRAL
+	bool "Central"
+	select BT_CENTRAL
+	select BT_GATT_CLIENT
+	select BT_GATT_AUTO_DISCOVER_CCC
+
+if ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_CENTRAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue when received from peripherals"
+	default 5
+
+config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_STACK_SIZE
+	int "BLE split central write thread stack size"
+	default 512
+
+config ZMK_BLE_SPLIT_CENTRAL_SPLIT_RUN_QUEUE_SIZE
+	int "Max number of behavior run events to queue to send to the peripheral(s)"
+	default 5
+
+endif
+
+if !ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config ZMK_SPLIT_BLE_PERIPHERAL_STACK_SIZE
+	int "BLE split peripheral notify thread stack size"
+	default 512
+
+config ZMK_SPLIT_BLE_PERIPHERAL_PRIORITY
+	int "BLE split peripheral notify thread priority"
+	default 5
+
+config ZMK_SPLIT_BLE_PERIPHERAL_POSITION_QUEUE_SIZE
+	int "Max number of key position state events to queue to send to the central"
+	default 10
+
+config ZMK_USB
+	default n
+
+config BT_MAX_PAIRED
+	default 1
+
+config BT_MAX_CONN
+	default 1
+
+config BT_GAP_AUTO_UPDATE_CONN_PARAMS
+	default n
+
+config BT_BAS
+	default y
+
+#!ZMK_SPLIT_BLE_ROLE_CENTRAL
+endif
+
+#ZMK_SPLIT_BLE
+endif
+
+#ZMK_SPLIT
+endif
+
+if ZMK_BLE
+
+if ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
+
+config BT_MAX_CONN
+	default 6
+
+config BT_MAX_PAIRED
+	default 6
+
+#ZMK_SPLIT_BLE && ZMK_SPLIT_BLE_ROLE_CENTRAL
+endif
+
+if !ZMK_SPLIT_BLE
+
+config BT_MAX_CONN
+	default 5
+
+config BT_MAX_PAIRED
+	default 5
+
+config BT_BAS
+	default y
+
+#!ZMK_SPLIT_BLE
+endif
+
+#ZMK_BLE
+endif
+
+#Split Support
+endmenu
 
 #Basic Keyboard Setup
 endmenu
