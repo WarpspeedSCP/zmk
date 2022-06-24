@@ -156,6 +156,13 @@ config BT_PERIPHERAL_PREF_LATENCY
 config BT_PERIPHERAL_PREF_TIMEOUT
 	default 400
 
+if ((!ZMK_SPLIT_ROLE_CENTRAL) || (!ZMK_SPLIT)) 
+	
+config BT_BAS
+	 default y
+
+endif
+
 #ZMK_BLE
 endif
 
