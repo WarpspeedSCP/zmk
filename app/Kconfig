@@ -107,16 +107,16 @@ config USB_HID_POLL_INTERVAL_MS
 endif
 
 menuconfig ZMK_BLE
-	bool "BLE (HID over GATT)"
-	select BT
-	select BT_SMP
-	select BT_SMP_SC_PAIR_ONLY
-	select BT_SMP_APP_PAIRING_ACCEPT
-	select BT_PERIPHERAL
-	select BT_DIS
-	select BT_BAS if !ZMK_SPLIT_ROLE_CENTRAL
-	select BT_SETTINGS
-	select SETTINGS
+    bool "BLE (HID over GATT)"
+    select BT
+    select BT_SMP
+    select BT_SMP_SC_PAIR_ONLY
+    select BT_SMP_APP_PAIRING_ACCEPT
+    select BT_PERIPHERAL
+    select BT_DIS
+    select BT_BAS
+    select BT_SETTINGS
+    select SETTINGS
 
 if ZMK_BLE
 

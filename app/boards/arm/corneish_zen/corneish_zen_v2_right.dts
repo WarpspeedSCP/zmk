@@ -98,6 +98,7 @@
         busy-gpios = <&gpio0 14 GPIO_ACTIVE_LOW>;
         reset-gpios = <&gpio0 25 GPIO_ACTIVE_LOW>;
         pwr = [03 00 26 26];
+        //softstart = [17 17 17 17];
         cdi = <0xd2>;
         tcon = <0x22>;
     };
