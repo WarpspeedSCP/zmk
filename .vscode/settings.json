@@ -1,7 +1,11 @@
 {
   "files.associations": {
     "*.overlay": "dts",
-    "*.keymap": "dts"
+    "*.keymap": "dts",
+    "device.h": "c",
+    "sensor.h": "c",
+    "log.h": "c"
   },
-  "python.formatting.provider": "black"
+  "python.formatting.provider": "black",
+  "C_Cpp.default.compilerPath": "/usr/bin/gcc"
 }
